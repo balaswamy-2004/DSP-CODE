@@ -1,0 +1,33 @@
+import cv2
+import numpy as np
+
+# Load an image
+image = cv2.imread('C:\\Users\\aarju\\Pictures\\Screenshots\\Screenshot 2024-04-03 185245.png', cv2.IMREAD_GRAYSCALE)
+
+if image is None:
+    print("Error: Could not load image")
+else:
+    # Apply Gaussian blur to reduce noise
+    blurred = cv2.GaussianBlur(image, (5, 5), 0)
+
+    # Sobel operator masks
+    sobel_x = np.array([[-1, 0, 1],
+                        [-2, 0, 2],
+                        [-1, 0, 1]])
+    
+    sobel_y = np.array([[-1, -2, -1],
+                        [0, 0, 0],
+                        [1, 2, 1]])
+
+    # Convolve the image with Sobel masks
+    edge_x = cv2.filter2D(blurred, -1, sobel_x)
+    edge_y = cv2.filter2D(blurred, -1, sobel_y)
+
+    # Combine horizontal and vertical edges
+    edges = cv2.bitwise_or(edge_x, edge_y)
+
+    # Display the original image and the edge-detected image
+    cv2.imshow('Original Image', image)
+    cv2.imshow('Edge Detection (Sobel)', edges)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
